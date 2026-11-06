@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>SAAHO AUTO ÉLITE</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:#080808;color:#fff;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:22px 18px;
+ display:flex;justify-content:space-between;
+ align-items:center;border-bottom:1px solid #383024;
+ position:sticky;top:0;background:#080808;z-index:5;
+}
+.logo{color:#d6b36b;font-size:21px;font-weight:bold;letter-spacing:2px}
+nav a{color:#ddd;text-decoration:none;margin-left:14px;font-size:12px}
+.hero{
+ padding:75px 20px 60px;text-align:center;
+ background:radial-gradient(ellipse at center,#332719,#080808 70%);
+}
+.hero h1{font-size:clamp(35px,8vw,65px);color:#e5c17b;letter-spacing:4px}
+.hero p{color:#aaa;margin-top:15px;line-height:1.7}
+.gold{color:#d6b36b}
+.btn{
+ border:1px solid #c8a45e;background:#c8a45e;
+ color:#080808;padding:12px 20px;border-radius:4px;
+ font-weight:bold;cursor:pointer;
+}
+.outline{background:transparent;color:#e3c27c}
+section{padding:35px 18px;max-width:1150px;margin:auto}
+.heading{text-align:center;margin-bottom:28px}
+.heading h2{font-size:27px;color:#e0bd75}
+.heading p{color:#999;margin-top:9px}
+.grid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+ gap:18px;
+}
+.card{
+ background:#141414;border:1px solid #373027;
+ border-radius:10px;overflow:hidden;
+}
+.preview{
+ height:185px;position:relative;
+ display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(140deg,#29231b,#101010);
+}
+.preview img{width:100%;height:100%;object-fit:cover}
+.no-photo{color:#c7a86d;font-size:40px;letter-spacing:5px}
+.card-info{padding:17px}
+.card-info h3{color:#e3c17b;font-size:21px}
+.card-info p{color:#aaa;font-size:13px;margin:8px 0 14px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.actions button{flex:1;min-width:90px}
+button{font:inherit}
+.details{
+ display:none;position:fixed;inset:0;background:#080808;
+ z-index:10;overflow:auto;padding:20px;
+}
+.details-inner{max-width:850px;margin:auto}
+.detail-image{
+ width:100%;height:300px;object-fit:cover;
+ background:#191919;border-radius:10px;margin:20px 0;
+}
+.detail-title{color:#e0bd75;font-size:30px;margin:15px 0}
+.detail-text{color:#bbb;line-height:1.8}
+.tabs{display:flex;gap:10px;margin:20px 0}
+.tabs button{flex:1}
+.upload-area{
+ border:1px dashed #c8a45e;border-radius:10px;
+ padding:22px;text-align:center;background:#17130e;
+}
+.upload-area p{color:#aaa;margin:12px 0}
+input,select{
+ background:#171717;color:white;border:1px solid #555;
+ padding:12px;border-radius:5px;width:100%;margin:8px 0;
+}
+.gallery{
+ display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px;
+}
+.gallery img{width:100%;height:130px;object-fit:cover;border-radius:6px}
+footer{text-align:center;padding:30px;color:#777;border-top:1px solid #333}
+@media(max-width:500px){
+ nav a{margin-left:7px;font-size:10px}
+ .hero{padding:55px 15px}
+ .detail-image{height:220px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">SAAHO <span class="gold">ÉLITE</span></div>
+ <nav>
+  <a href="#models">MODELS</a>
+  <a href="#upload">UPLOAD</a>
+ </nav>
+</header>
+
+<div class="hero">
+ <h1>SAAHO AUTO ÉLITE</h1>
+ <p>Beyond Design. Beyond Imagination.<br>
+ An independent vision of tomorrow's automobiles.</p>
+ <br>
+ <a href="#models"><button class="btn">EXPLORE OUR CARS</button></a>
+</div>
+
+<section id="models">
+ <div class="heading">
+  <h2>OUR AUTOMOBILE COLLECTION</h2>
+  <p>Discover the original SAAHO model concepts.</p>
+ </div>
+ <div class="grid" id="carGrid"></div>
+</section>
+
+<section id="upload">
+ <div class="heading">
+  <h2>CAR PHOTO STUDIO</h2>
+  <p>Manage your model photographs from your iPhone.</p>
+ </div>
+
+ <div class="upload-area">
+  <h3 class="gold">UPLOAD CAR PHOTOS</h3>
+  <p>Select a model, version and photographs.</p>
+
+  <select id="uploadModel"></select>
+  <select id="uploadVersion">
+   <option value="Concept">Concept Version</option>
+   <option value="Production">Production Version</option>
+  </select>
+
+  <input id="photoFiles" type="file" accept="image/*" multiple>
+
+  <button class="btn" onclick="uploadPhotos()">UPLOAD PHOTOS</button>
+  <p id="uploadStatus"></p>
+ </div>
+</section>
+
+<div class="details" id="details">
+ <div class="details-inner">
+  <button class="btn outline" onclick="closeDetails()">← BACK TO COLLECTION</button>
+  <h2 class="detail-title" id="detailTitle"></h2>
+  <div class="tabs">
+   <button class="btn" onclick="changeVersion('Concept')">CONCEPT</button>
+   <button class="btn outline" onclick="changeVersion('Production')">PRODUCTION</button>
+  </div>
+  <img class="detail-image" id="mainImage" alt="SAAHO car">
+  <p class="detail-text" id="detailDescription"></p>
+  <h3 class="gold" style="margin-top:25px">PHOTO GALLERY</h3>
+  <div class="gallery" id="gallery"></div>
+ </div>
+</div>
+
+<footer>
+ SAAHO AUTO ÉLITE © 2026<br>
+ <span class="gold">Original Automotive Design Vision</span>
+</footer>
+
+<script>
+const cars=[
+ {id:"aura",name:"SAAHO AURA",type:"Hatchback",
+  desc:"A compact automobile design vision combining modern proportions, intelligent space and distinctive SAAHO styling."},
+ {id:"vera",name:"SAAHO VÉRA",type:"Premium Sedan",
+  desc:"A refined sedan concept focused on elegant proportions, comfort and a distinctive exterior identity."},
+ {id:"xeon",name:"SAAHO XÉON",type:"SUV",
+  desc:"A bold SUV design vision with a confident stance, spacious proportions and versatile character."},
+ {id:"gt",name:"SAAHO GT",type:"Sports Car",
+  desc:"An expressive sports car concept focused on performance-inspired design and aerodynamic character."},
+ {id:"m7",name:"SAAHO M7",type:"MUV",
+  desc:"A practical multi-purpose vehicle concept designed around space, comfort and family journeys."},
+ {id:"elys",name:"SAAHO ELYS",type:"Electric Vehicle",
+  desc:"An electric mobility concept exploring modern proportions and a forward-looking SAAHO identity."}
+];
+
+let currentCar="aura";
+let currentVersion="Concept";
+let db;
+
+const request=indexedDB.open("SaahoElitePhotos",1);
+
+request.onupgradeneeded=e=>{
+ const database=e.target.result;
+ if(!database.objectStoreNames.contains("photos")){
+  database.createObjectStore("photos",{keyPath:"key"});
+ }
+};
+
+request.onsuccess=e=>{
+ db=e.target.result;
+ renderCars();
+};
+
+request.onerror=()=>{
+ document.getElementById("uploadStatus").textContent=
+ "Photo storage could not be opened in this browser.";
+};
+
+function getPhotos(car,version){
+ return new Promise(resolve=>{
+  if(!db){resolve([]);return;}
+  const tx=db.transaction("photos","readonly");
+  const req=tx.objectStore("photos").get(car+"-"+version);
+  req.onsuccess=()=>resolve(req.result?.images||[]);
+  req.onerror=()=>resolve([]);
+ });
+}
+
+function savePhotos(car,version,images){
+ return new Promise((resolve,reject)=>{
+  const tx=db.transaction("photos","readwrite");
+  tx.objectStore("photos").put({
+   key:car+"-"+version,
+   images
+  });
+  tx.oncomplete=resolve;
+  tx.onerror=reject;
+ });
+
+}
+
+function renderCars(){
+ const grid=document.getElementById("carGrid");
+ grid.innerHTML="";
+ const select=document.getElementById("uploadModel");
+ select.innerHTML="";
+
+ cars.forEach(car=>{
+  const option=document.createElement("option");
+  option.value=car.id;
+  option.textContent=car.name;
+  select.appendChild(option);
+
+  const card=document.createElement("article");
+  card.className="card";
+
+  card.innerHTML=`
+   <div class="preview">
+    <div class="no-photo">S</div>
+    <img style="display:none" alt="${car.name}">
+   </div>
+   <div class="card-info">
+    <h3>${car.name}</h3>
+    <p>${car.type} · Concept + Production</p>
+    <div class="actions">
+     <button class="btn" data-action="open">VIEW DETAILS</button>
+     <button class="btn outline" data-action="upload">ADD PHOTOS</button>
+    </div>
+   </div>`;
+
+  card.querySelector('[data-action="open"]').onclick=()=>openDetails(car.id);
+  card.querySelector('[data-action="upload"]').onclick=()=>{
+   select.value=car.id;
+   document.getElementById("upload").scrollIntoView({behavior:"smooth"});
+  };
+
+  grid.appendChild(card);
+  showCardPhoto(car.id,card);
+ });
+}
+
+async function showCardPhoto(id,card){
+ const images=await getPhotos(id,"Production");
+ const chosen=images[0] || (await getPhotos(id,"Concept"))[0];
+ if(!chosen)return;
+ const img=card.querySelector(".preview img");
+ img.src=URL.createObjectURL(chosen);
+ img.style.display="block";
+ card.querySelector(".no-photo").style.display="none";
+}
+
+async function openDetails(id){
+ currentCar=id;
+ currentVersion="Concept";
+ document.getElementById("details").style.display="block";
+ await displayDetails();
+}
+
+async function changeVersion(version){
+ currentVersion=version;
+ await displayDetails();
+}
+
+async function displayDetails(){
+ const car=cars.find(c=>c.id===currentCar);
+ document.getElementById("detailTitle").textContent=
+ car.name+" — "+currentVersion+" VERSION";
+ document.getElementById("detailDescription").textContent=car.desc;
+
+ const photos=await getPhotos(currentCar,currentVersion);
+ const gallery=document.getElementById("gallery");
+ gallery.innerHTML="";
+
+ const main=document.getElementById("mainImage");
+
+ if(photos.length){
+  main.src=URL.createObjectURL(photos[0]);
+  photos.forEach(photo=>{
+   const img=document.createElement("img");
+   img.src=URL.createObjectURL(photo);
+   img.onclick=()=>main.src=img.src;
+   gallery.appendChild(img);
+  });
+ }else{
+  main.removeAttribute("src");
+  main.alt="No "+currentVersion+" photos uploaded yet";
+  const message=document.createElement("p");
+  message.textContent="No photos uploaded for this version yet. Use the Photo Studio to add images.";
+  message.style.color="#c8a45e";
+  gallery.appendChild(message);
+ }
+}
+
+function closeDetails(){
+ document.getElementById("details").style.display="none";
+}
+
+async function uploadPhotos(){
+ if(!db){
+  document.getElementById("uploadStatus").textContent="Storage is not ready. Refresh and try again.";
+  return;
+ }
+
+ const car=document.getElementById("uploadModel").value;
+ const version=document.getElementById("uploadVersion").value;
+ const files=[...document.getElementById("photoFiles").files];
+
+ if(!files.length){
+  document.getElementById("uploadStatus").textContent="Please select photos first.";
+  return;
+ }
+
+ if(files.some(file=>!file.type.startsWith("image/"))){
+  document.getElementById("uploadStatus").textContent="Please select image files only.";
+  return;
+ }
+
+ try{
+  const existing=await getPhotos(car,version);
+  await savePhotos(car,version,[...existing,...files]);
+  document.getElementById("uploadStatus").textContent=
+   files.length+" photo(s) saved for "+car.toUpperCase()+" "+version+".";
+  document.getElementById("photoFiles").value="";
+  renderCars();
+
+  if(document.getElementById("details").style.display==="block"
+    && currentCar===car && currentVersion===version){
+   await displayDetails();
+  }
+ }catch(error){
+  document.getElementById("uploadStatus").textContent=
+   "Storage limit or browser error. Try fewer or smaller photos.";
+ }
+}
+</script>
+</body>
+</html>
